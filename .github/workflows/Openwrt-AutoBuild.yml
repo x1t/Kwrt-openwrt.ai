@@ -47,7 +47,7 @@ jobs:
           set -euo pipefail
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends \
-            aria2 bash binutils build-essential bzip2 ccache clang curl device-tree-compiler \
+            android-sdk-libsparse-utils aria2 bash binutils build-essential bzip2 ccache clang curl device-tree-compiler \
             file flex g++ g++-multilib gawk gcc-multilib gettext git jq libelf-dev \
             libfuse-dev libgmp3-dev liblzma-dev libmpc-dev libncurses5-dev libpython3-dev \
             libssl-dev llvm ninja-build patch pigz python3 python3-pyelftools \
@@ -257,6 +257,17 @@ jobs:
           }
           if [[ ! "$(basename "$image")" =~ ^kwrt-[0-9]{2}\.[0-9]{2}\.[0-9]{4}-amlogic-meson8b-thunder-onecloud-ext4-emmc_burn\.img(\.gz)?$ ]]; then
             echo "Unexpected burn image filename: $(basename "$image")" >&2
+            exit 1
+          fi
+
+          validation_image="$image"
+          if [[ "$image" == *.gz ]]; then
+            validation_image="$RUNNER_TEMP/onecloud-emmc-burn.img"
+            gzip -cd "$image" > "$validation_image"
+          fi
+          header="$(od -An -tx1 -j4 -N8 "$validation_image" | tr -d '[:space:]')"
+          if [[ "$header" != "020000005619b527" ]]; then
+            echo "Invalid Amlogic USB Burning Tool image header: $header" >&2
             exit 1
           fi
           grep -Eq '^luci-app-openclash[[:space:]]' "$manifest" || {
