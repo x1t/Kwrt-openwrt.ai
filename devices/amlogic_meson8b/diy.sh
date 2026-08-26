@@ -14,6 +14,9 @@ sed -i 's/Os/O2/g' include/target.mk
 
 git_clone_path master https://github.com/coolsnowwolf/lede target/linux/amlogic
 
+install -m 0755 "$SHELL_FOLDER/gen_aml_emmc_img.sh" \
+	target/linux/amlogic/image/gen_aml_emmc_img.sh
+
 # Only import OpenClash. Scanning the entire op-packages feed pulls thousands of
 # unrelated packages and currently fails on malformed package metadata.
 git_clone_path main https://github.com/kiddin9/op-packages luci-app-openclash
@@ -31,4 +34,3 @@ sed -i -e "s/KERNEL_PATCHVER:=6.6/KERNEL_PATCHVER:=6.12/" \
 target/linux/amlogic/Makefile
 
 rm -rf target/linux/amlogic/patches-6.12/{001-dts-s905d-fix-high-load.patch,902-use-system-LED-for-OpenWrt.patch}
-
