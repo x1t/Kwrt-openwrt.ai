@@ -290,7 +290,10 @@ jobs:
           find "$target_dir" -maxdepth 1 -type f -name '*onecloud*rootfs.tar.gz' \
             -exec cp {} "$artifact_dir/" \;
 
-          sha256sum "$artifact_dir"/* > "$artifact_dir/SHA256SUMS"
+          (
+            cd "$artifact_dir"
+            sha256sum -- * > SHA256SUMS
+          )
           ls -lh "$artifact_dir"
 
       - name: Upload firmware
