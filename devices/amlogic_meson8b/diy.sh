@@ -24,7 +24,7 @@ mkdir -p package/openclash
 mv luci-app-openclash package/openclash/
 
 # Pin stable AdGuard Home/OpenWrt integration revisions for reproducible builds.
-git_clone_path 1db6cd846c1c72d77ce38eec28b749affc44b7a0 \
+git_clone_path 2a621bc4473b0e4efeff563dfa281a06eb3e0af7 \
 	https://github.com/openwrt/packages net/adguardhome
 rm -rf feeds/packages/net/adguardhome
 mv net/adguardhome feeds/packages/net/
