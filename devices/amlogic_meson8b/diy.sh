@@ -14,6 +14,16 @@ sed -i 's/Os/O2/g' include/target.mk
 
 git_clone_path master https://github.com/coolsnowwolf/lede target/linux/amlogic
 
+# OpenWrt 25.12's Docker CLI recipe inherits OpenWrt's TARGET variable. This
+# makes docker/cli write its binary outside PKG_BUILD_DIR, while packaging
+# expects build/docker. Backport the absolute TARGET used by current packages.
+docker_makefile="feeds/packages/utils/docker/Makefile"
+if ! grep -Fq 'TARGET=$(PKG_BUILD_DIR)/build' "$docker_makefile"; then
+	sed -i '/^[[:space:]]*VERSION=$(PKG_VERSION)[[:space:]]*\\$/a\
+\t\tTARGET=$(PKG_BUILD_DIR)/build \\' "$docker_makefile"
+fi
+grep -Fq 'TARGET=$(PKG_BUILD_DIR)/build' "$docker_makefile"
+
 install -m 0755 "$SHELL_FOLDER/gen_aml_emmc_img.sh" \
 	target/linux/amlogic/image/gen_aml_emmc_img.sh
 
