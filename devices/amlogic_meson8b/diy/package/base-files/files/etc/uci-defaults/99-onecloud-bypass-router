@@ -30,16 +30,18 @@ printf '%s\n' '123456' '123456' | passwd root >/dev/null 2>&1
 # Grow the mounted root filesystem online on first boot.
 root_device="$(readlink -f /dev/root 2>/dev/null)"
 if [ ! -b "$root_device" ]; then
-	for argument in $(cat /proc/cmdline); do
-		case "$argument" in
-			root=/dev/*) root_device="${argument#root=}" ;;
-		esac
-	done
+	root_device_number="$(awk '$5 == "/" { print $3; exit }' /proc/self/mountinfo)"
+	root_device_sysfs="$(readlink -f "/sys/dev/block/$root_device_number" 2>/dev/null)"
+	[ -n "$root_device_sysfs" ] && root_device="/dev/${root_device_sysfs##*/}"
 fi
 
 case "$root_device" in
 	/dev/mmcblk*p2)
 		resize2fs "$root_device" || exit 1
+		;;
+	*)
+		echo "Unable to resolve the OneCloud root device: $root_device" >&2
+		exit 1
 		;;
 esac
 
