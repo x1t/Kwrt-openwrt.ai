@@ -149,6 +149,8 @@ jobs:
           test -f feeds/luci/applications/luci-app-adguardhome/Makefile
           test -f package/passwall-luci/luci-app-passwall/Makefile
           test -f package/passwall-packages/xray-core/Makefile
+          grep -Fqx 'PKG_VERSION:=0.107.77' feeds/packages/net/adguardhome/Makefile
+          grep -Fqx 'PKG_VERSION:=26.8.26' package/passwall-luci/luci-app-passwall/Makefile
           test -f target/linux/amlogic/image/meson8b.mk
 
       - name: Apply patches
@@ -193,6 +195,7 @@ jobs:
             CONFIG_PACKAGE_luci-app-passwall_Nftables_Transparent_Proxy=y
             CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
             CONFIG_PACKAGE_xray-core=y
+            CONFIG_PACKAGE_resize2fs=y
             CONFIG_PACKAGE_dnsmasq-full=y
             CONFIG_PACKAGE_kmod-tun=y
             CONFIG_PACKAGE_ruby=y
@@ -220,6 +223,7 @@ jobs:
           grep -Fq "set network.lan.netmask='255.255.255.0'" "$defaults_file"
           grep -Fq "set network.lan.gateway='192.168.3.2'" "$defaults_file"
           grep -Fq "set dhcp.lan.ignore='1'" "$defaults_file"
+          grep -Fq 'resize2fs "$root_device"' "$defaults_file"
 
           ./scripts/diffconfig.sh
 
@@ -284,8 +288,8 @@ jobs:
             echo "OpenClash is missing from the firmware manifest" >&2
             exit 1
           }
-          grep -Eq '^adguardhome[[:space:]]+0\.107\.78-' "$manifest" || {
-            echo "AdGuard Home 0.107.78 is missing from the firmware manifest" >&2
+          grep -Eq '^adguardhome[[:space:]]+0\.107\.77-' "$manifest" || {
+            echo "AdGuard Home 0.107.77 is missing from the firmware manifest" >&2
             exit 1
           }
           grep -Eq '^luci-app-adguardhome[[:space:]]' "$manifest" || {
