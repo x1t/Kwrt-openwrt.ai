@@ -195,7 +195,7 @@ jobs:
             CONFIG_PACKAGE_luci-app-passwall_Nftables_Transparent_Proxy=y
             CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
             CONFIG_PACKAGE_xray-core=y
-            CONFIG_PACKAGE_resize2fs=y
+            CONFIG_TARGET_ROOTFS_PARTSIZE=7168
             CONFIG_PACKAGE_dnsmasq-full=y
             CONFIG_PACKAGE_kmod-tun=y
             CONFIG_PACKAGE_ruby=y
@@ -223,7 +223,10 @@ jobs:
           grep -Fq "set network.lan.netmask='255.255.255.0'" "$defaults_file"
           grep -Fq "set network.lan.gateway='192.168.3.2'" "$defaults_file"
           grep -Fq "set dhcp.lan.ignore='1'" "$defaults_file"
-          grep -Fq 'resize2fs "$root_device"' "$defaults_file"
+          if grep -Fq 'resize2fs' "$defaults_file"; then
+            echo "Online root filesystem resizing must not be enabled" >&2
+            exit 1
+          fi
 
           ./scripts/diffconfig.sh
 
