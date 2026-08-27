@@ -189,6 +189,11 @@ jobs:
             CONFIG_TARGET_amlogic_meson8b=y
             CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y
             CONFIG_PACKAGE_luci-app-openclash=y
+            CONFIG_PACKAGE_docker=y
+            CONFIG_PACKAGE_dockerd=y
+            CONFIG_PACKAGE_containerd=y
+            CONFIG_PACKAGE_runc=y
+            CONFIG_DOCKER_STO_EXT4=y
             CONFIG_PACKAGE_adguardhome=y
             CONFIG_PACKAGE_luci-app-adguardhome=y
             CONFIG_PACKAGE_luci-app-passwall=y
@@ -291,6 +296,12 @@ jobs:
             echo "OpenClash is missing from the firmware manifest" >&2
             exit 1
           }
+          for docker_package in docker dockerd containerd runc; do
+            grep -Eq "^${docker_package}[[:space:]]" "$manifest" || {
+              echo "${docker_package} is missing from the firmware manifest" >&2
+              exit 1
+            }
+          done
           grep -Eq '^adguardhome[[:space:]]+-[[:space:]]+0\.107\.77-' "$manifest" || {
             echo "AdGuard Home 0.107.77 is missing from the firmware manifest" >&2
             exit 1
