@@ -288,7 +288,7 @@ jobs:
             echo "OpenClash is missing from the firmware manifest" >&2
             exit 1
           }
-          grep -Eq '^adguardhome[[:space:]]+0\.107\.77-' "$manifest" || {
+          grep -Eq '^adguardhome[[:space:]]+-[[:space:]]+0\.107\.77-' "$manifest" || {
             echo "AdGuard Home 0.107.77 is missing from the firmware manifest" >&2
             exit 1
           }
@@ -296,7 +296,7 @@ jobs:
             echo "AdGuard Home LuCI integration is missing from the firmware manifest" >&2
             exit 1
           }
-          grep -Eq '^luci-app-passwall[[:space:]]+26\.8\.26-' "$manifest" || {
+          grep -Eq '^luci-app-passwall[[:space:]]+-[[:space:]]+26\.8\.26-' "$manifest" || {
             echo "PassWall 26.8.26 is missing from the firmware manifest" >&2
             exit 1
           }
