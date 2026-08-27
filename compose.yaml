@@ -1,0 +1,16 @@
+services:
+  onecloud-builder:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: kwrt-onecloud-builder
+    platform: linux/arm64
+    volumes:
+      - .:/workspace:ro
+      - onecloud-cache:/cache
+      - onecloud-artifacts:/artifacts
+    restart: "no"
+
+volumes:
+  onecloud-cache:
+  onecloud-artifacts:
